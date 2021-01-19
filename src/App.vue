@@ -1,28 +1,46 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" class="bg-gray-200 pt-2 pb-2.5 h-screen">
+    <div id="nav" class="container w-8/12 bg-gray">
+      <Search @openModal="clickOpen" @searchParam="searchParam" />
+      <ContactTable :searchContact="searchContact" />
+      <AddContact v-if="modalAdd" @closeModal="clickOpen" />
+      <NotificationsList />
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { mapActions } from "vuex";
+import ContactTable from "./components/ContactTable.vue";
+import Search from "./components/Search.vue";
+import AddContact from "./components/AddContact.vue";
+import NotificationsList from "./components/NotificationsList.vue";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
+    ContactTable,
+    Search,
+    AddContact,
+    NotificationsList
+  },
+  data() {
+    return {
+      modalAdd: false,
+      searchContact: ""
+    };
+  },
+  methods: {
+    ...mapActions(["GET_CONTACTS_FROM_API"]),
+    clickOpen(value) {
+      this.modalAdd = value;
+    },
+    searchParam(val) {
+      console.log(val);
+      this.searchContact = val;
+    }
+  },
+  mounted() {
+    this.GET_CONTACTS_FROM_API();
   }
-}
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
